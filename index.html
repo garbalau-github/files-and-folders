@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Folders & Files</title>
+    </head>
+    <body>
+        <main>
+            <section class="environment">
+                <nav>
+                    <p>Environment</p>
+                    <div class="environment-buttons">
+                        <button id="button-add-folder">Folder</button>
+                        <button id="button-add-file">File</button>
+                        <button id="button-cancel" class="button-cancel">
+                            Cancel
+                        </button>
+                    </div>
+                    <div>
+                        <form id="folder-form" class="folder-form">
+                            <label>
+                                Name
+                                <input
+                                    id="input-folder-name"
+                                    required
+                                    type="text"
+                                />
+                            </label>
+                            <button>Add Folder</button>
+                        </form>
+                        <form id="file-form" class="file-form">
+                            <label>
+                                Name
+                                <input
+                                    id="input-file-name"
+                                    required
+                                    type="text"
+                                />
+                            </label>
+                            <label>
+                                Extension
+                                <input
+                                    id="input-file-extension"
+                                    required
+                                    type="text"
+                                />
+                            </label>
+                            <button>Add File</button>
+                        </form>
+                    </div>
+                </nav>
+                <br />
+                <div id="elements"></div>
+            </section>
+        </main>
+        <script defer type="module" src="/src/main.ts"></script>
+    </body>
+</html>
