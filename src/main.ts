@@ -1,20 +1,11 @@
-/**
- * Folder and File Structure
- * We start from empty environment
- * We can create folders and files and give them names
- * Folders and files have different icons
- * Folders can contain over folders and files
- * We can delete files and folders (if top level folder is deleted, everythin it contaned is deleted as well)
- */
+import './style.css';
+import { EnvironmentClass } from './classes/EnvironmentClass';
 
+// * DOM REFERENCES
 const buttonAddFile = document.querySelector('#button-add-file');
 const buttonAddFolder = document.querySelector('#button-add-folder');
 const buttonCancel = document.querySelector('#button-cancel');
 const elementsDiv = document.querySelector('#elements');
-
-import { EnvironmentClass } from './EnvironmentClass';
-
-// Inputs
 const inputFolderName = document.querySelector(
     '#input-folder-name'
 ) as HTMLInputElement;
@@ -24,22 +15,20 @@ const inputFileName = document.querySelector(
 const inputFileExtension = document.querySelector(
     '#input-file-extension'
 ) as HTMLInputElement;
-
 const fileForm = document.querySelector('#file-form');
 const folderForm = document.querySelector('#folder-form');
 
-import './style.css';
-
+// * GLOBALS
 const ENVIRONMENT = new EnvironmentClass();
-
 let CREATION_MODE = 'GLOBAL';
 let PARENT_ID = '';
 
-// File example
+// * INITIAL CODE
 ENVIRONMENT.addEntry('folder', 'hooks');
 ENVIRONMENT.addEntry('file', 'index', 'html');
+ENVIRONMENT.addEntry('file', 'style', 'css');
 
-// Functions
+// * FUNCTIONS
 const createNewFile = (fileName: string, extension: string): void => {
     ENVIRONMENT.addEntry('file', fileName, extension);
 };
@@ -49,40 +38,40 @@ const createNewFolder = (folderName: string): void => {
 };
 
 const createNewFileChildren = (name: string, extension: string) => {
-    console.log(PARENT_ID);
     ENVIRONMENT.addChildren('file', PARENT_ID, name, extension);
     PARENT_ID = '';
 };
 
 const createNewFolderChildren = (name: string) => {
-    console.log(PARENT_ID);
     ENVIRONMENT.addChildren('folder', PARENT_ID, name);
     PARENT_ID = '';
 };
 
-const toggleChildrenFileMode = (parentId: string) => {
+const toggleChildrenForm = (formType: string, parentId: string) => {
     CREATION_MODE = 'CHILDREN';
     PARENT_ID = parentId;
     buttonAddFile?.classList.add('hide');
     buttonAddFolder?.classList.add('hide');
-    fileForm?.classList.add('show');
-};
-
-const toggleChildrenFolderMode = (parentId: string) => {
-    CREATION_MODE = 'CHILDREN';
-    PARENT_ID = parentId;
-    buttonAddFile?.classList.add('hide');
-    buttonAddFolder?.classList.add('hide');
-    folderForm?.classList.add('show');
+    if (formType === 'file') {
+        fileForm?.classList.add('show');
+        return;
+    }
+    if (formType === 'folder') {
+        folderForm?.classList.add('show');
+        return;
+    }
 };
 
 const clearState = () => {
     inputFolderName.value = '';
     inputFileName.value = '';
     inputFileExtension.value = '';
+    buttonCancel?.classList.remove('show');
+    buttonAddFile?.classList.remove('hide');
+    buttonAddFolder?.classList.remove('hide');
 };
 
-// Events
+// * EVENTS
 buttonAddFile?.addEventListener('click', () => {
     CREATION_MODE = 'GLOBAL';
     buttonCancel?.classList.add('show');
@@ -119,9 +108,6 @@ fileForm?.addEventListener('submit', (e) => {
     }
     clearState();
     fileForm?.classList.remove('show');
-    buttonCancel?.classList.remove('show');
-    buttonAddFile?.classList.remove('hide');
-    buttonAddFolder?.classList.remove('hide');
 });
 
 folderForm?.addEventListener('submit', (e) => {
@@ -134,22 +120,19 @@ folderForm?.addEventListener('submit', (e) => {
             createNewFolderChildren(inputFolderName?.value);
         }
     }
-    inputFolderName.value = '';
+    clearState();
     folderForm?.classList.remove('show');
-    buttonCancel?.classList.remove('show');
-    buttonAddFile?.classList.remove('hide');
-    buttonAddFolder?.classList.remove('hide');
 });
 
 elementsDiv?.addEventListener('click', (e) => {
     const element = e.target as HTMLDivElement | HTMLButtonElement;
     if (element.classList.contains('button-create-file')) {
         let parentId = element.parentElement?.parentElement?.getAttribute('id');
-        toggleChildrenFileMode(`${parentId}`);
+        toggleChildrenForm('file', `${parentId}`);
     }
     if (element.classList.contains('button-create-folder')) {
         let parentId = element.parentElement?.parentElement?.getAttribute('id');
-        toggleChildrenFolderMode(`${parentId}`);
+        toggleChildrenForm('folder', `${parentId}`);
     }
     if (element.classList.contains('button-delete')) {
         let entryId = element.parentElement?.parentElement?.getAttribute('id');

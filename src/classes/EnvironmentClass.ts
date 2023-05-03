@@ -1,16 +1,20 @@
 import { FileClass } from './FileClass';
 import { FolderClass } from './FolderClass';
 
-import { generateId } from './utils/index';
+import { generateId } from '../utils/generateId';
 
 const elementsDiv = document.querySelector('#elements');
 
-type FileType = FileClass | FileClass[];
-type FolderType = FolderClass | FolderClass[];
-
 export interface EnvironmentInterface {
-    entries: FileType | FolderType;
+    entries: FileClass[] | FolderClass[];
     addEntry(type: string, name: string, extension?: string): void;
+    addChildren(
+        type: string,
+        parentId: string,
+        name: string,
+        extension?: string
+    ): void;
+    deleteEntry(id: string): void;
 }
 
 export class EnvironmentClass implements EnvironmentInterface {
@@ -28,6 +32,8 @@ export class EnvironmentClass implements EnvironmentInterface {
             // Controls
             let controlElements = document.createElement('div');
             controlElements.classList.add('controls');
+
+            // Delete Button
             let deleteButton = document.createElement('button');
             let deleteButtonText = document.createTextNode('Delete');
             deleteButton.classList.add('button-delete');
@@ -54,20 +60,24 @@ export class EnvironmentClass implements EnvironmentInterface {
             let controlElements = document.createElement('div');
             controlElements.classList.add('controls');
 
+            // Create File Button
             let createButtonFile = document.createElement('button');
             let createButtonFileText = document.createTextNode('+ File');
             createButtonFile.classList.add('button-create-file');
             createButtonFile.append(createButtonFileText);
 
+            // Create Folder Button
             let createButtonFolder = document.createElement('button');
             let createButtonFolderText = document.createTextNode('+ Folder');
             createButtonFolder.classList.add('button-create-folder');
             createButtonFolder.append(createButtonFolderText);
 
+            // Delete Button
             let deleteButton = document.createElement('button');
             let deleteButtonText = document.createTextNode('Delete');
             deleteButton.classList.add('button-delete');
             deleteButton.append(deleteButtonText);
+
             controlElements.appendChild(createButtonFile);
             controlElements.appendChild(createButtonFolder);
             controlElements.append(deleteButton);
@@ -87,9 +97,8 @@ export class EnvironmentClass implements EnvironmentInterface {
         name: string,
         extension?: string
     ) {
-        console.log(parentId);
         if (type === 'file') {
-            this.entries.forEach((entry) => {
+            this.entries.forEach((entry: FileClass | FolderClass) => {
                 if (entry.id === parentId && entry instanceof FolderClass) {
                     entry.appendElementToFolder(
                         'file',
@@ -101,7 +110,7 @@ export class EnvironmentClass implements EnvironmentInterface {
             });
         }
         if (type === 'folder') {
-            this.entries.forEach((entry) => {
+            this.entries.forEach((entry: FileClass | FolderClass) => {
                 if (entry.id === parentId && entry instanceof FolderClass) {
                     entry.appendElementToFolder('folder', name, parentId);
                 }
@@ -109,9 +118,12 @@ export class EnvironmentClass implements EnvironmentInterface {
         }
     }
     deleteEntry(id: string) {
-        const filteredEntries = this.entries.filter((entry) => {
-            return entry.id !== id;
-        });
-        this.entries = filteredEntries;
+        const filteredEntries = this.entries.filter(
+            (entry: FileClass | FolderClass) => {
+                return entry.id !== id;
+            }
+        );
+
+        this.entries = [...filteredEntries];
     }
 }

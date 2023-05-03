@@ -1,5 +1,5 @@
 import { FileClass } from './FileClass';
-import { generateId } from './utils';
+import { generateId } from '../utils/generateId';
 
 export interface FolderInterface {
     name: string;
@@ -72,8 +72,6 @@ export class FolderClass implements FolderInterface {
         }
     }
     renderElements(parentId: string) {
-        console.log(this.children);
-        console.log(this.list);
         let parentFolder = document.querySelector(`[id=${parentId}]`)!;
         parentFolder?.appendChild(this.list);
     }
